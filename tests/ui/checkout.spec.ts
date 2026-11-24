@@ -57,3 +57,46 @@ test('TC-UI-07 cancel checkout on the overview step keeps the cart', async ({
   await header.openCart();
   await expect(cartPage.itemNames).toHaveText([BACKPACK, ONESIE]);
 });
+
+test('TC-UI-09 checkout information requires every field', async ({
+  page,
+  inventoryPage,
+  header,
+  cartPage,
+  checkoutInfoPage,
+}) => {
+  await openCheckoutWith({ inventoryPage, header, cartPage }, [BACKPACK]);
+
+  await test.step('all fields empty', async () => {
+    await checkoutInfoPage.continue();
+    await expect(checkoutInfoPage.errorMessage).toHaveText('Error: First Name is required');
+  });
+
+  await test.step('only first name filled', async () => {
+    await checkoutInfoPage.fill({ firstName: CUSTOMER.firstName });
+    await checkoutInfoPage.continue();
+    await expect(checkoutInfoPage.errorMessage).toHaveText('Error: Last Name is required');
+  });
+
+  await test.step('postal code missing', async () => {
+    await checkoutInfoPage.fill({ lastName: CUSTOMER.lastName });
+    await checkoutInfoPage.continue();
+    await expect(checkoutInfoPage.errorMessage).toHaveText('Error: Postal Code is required');
+  });
+
+  await expect(page).toHaveURL(/\/checkout-step-one\.html$/);
+});
+
+test(
+  'TC-UI-10 checkout with an empty cart is blocked',
+  { annotation: { type: 'bug', description: 'BUG-UI-01' } },
+  async ({ page, header, cartPage }) => {
+    test.fail(true, 'BUG-UI-01: checkout is available with an empty cart');
+
+    await cartPage.goto();
+    await expect(header.cartBadge).toBeHidden();
+    await cartPage.checkout();
+
+    await expect(page).not.toHaveURL(/\/checkout-step-one\.html$/);
+  },
+);
