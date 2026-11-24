@@ -17,7 +17,7 @@ export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
 
 export const BACKPACK = 'Sauce Labs Backpack';
 export const BIKE_LIGHT = 'Sauce Labs Bike Light';
-export const ONESIE ='Sauce Labs Onesie';
+export const ONESIE = 'Sauce Labs Onesie';
 export const FLEECE_JACKET = 'Sauce Labs Fleece Jacket';
 
 export function priceOf(productName: string): number {
