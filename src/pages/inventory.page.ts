@@ -3,10 +3,12 @@ import type { Product, SortOption } from '../data/products';
 
 export class InventoryPage {
   readonly title: Locator;
+  readonly prices: Locator;
   private readonly cards: Locator;
 
   constructor(private readonly page: Page) {
     this.title = page.getByTestId('title');
+    this.prices = page.getByTestId('inventory-item-price');
     this.cards = page.getByTestId('inventory-item');
   }
 

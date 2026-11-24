@@ -1,0 +1,27 @@
+{
+  "caseId": "PL-UI-02",
+  "casePath": "pipeline/cases/PL-UI-02.md",
+  "outFile": "tests/generated/ui/PL-UI-02.spec.ts",
+  "attempts": [
+    {
+      "attempt": 1,
+      "agent": {
+        "ok": true,
+        "seconds": 22,
+        "turns": 13,
+        "costUsd": 0.3411016,
+        "answer": "1. `files:` created `tests/generated/ui/PL-UI-02.spec.ts`; extended `src/pages/product.page.ts` (`cartButton`, `addToCart()`, `removeFromCart()`) and `src/data/products.ts` (`BIKE_LIGHT`). Nothing was run — no typecheck, lint, format check or test run, and the test was not seen failing with a wrong expected value.\n2. `assumptions:` the product page has exactly one button whose accessible name is \"Add to cart\" or \"Remove\", located by role and name because its `data-test` id is unknown; the empty-cart badge is asserted with `toBeHidden()`, relying on the header's note that it is absent from the DOM; the precondition (logged in as `standard_user`, empty cart) is assumed to come from project setup, as in `cart.spec.ts`.\n3. `risk:` `await expect(productPage.cartButton).toHaveText('Remove')` — it depends on the guessed role/name locator and on the button text matching exactly."
+      },
+      "passed": true,
+      "source": "import { BIKE_LIGHT } from '../../../src/data/products';\nimport { expect, test } from '../../../src/fixtures/ui';\n\ntest('PL-UI-02 add to cart and remove from the product page', async ({\n  inventoryPage,\n  productPage,\n  header,\n}) => {\n  await inventoryPage.goto();\n\n  await inventoryPage.openProduct(BIKE_LIGHT);\n  await expect(productPage.name).toHaveText(BIKE_LIGHT);\n\n  await productPage.addToCart();\n  await expect(header.cartBadge).toHaveText('1');\n  await expect(productPage.cartButton).toHaveText('Remove');\n\n  await productPage.removeFromCart();\n  await expect(header.cartBadge).toBeHidden();\n  await expect(productPage.cartButton).toHaveText('Add to cart');\n});\n",
+      "output": "Running 2 tests using 1 worker\n\n[1/2] [setup] › tests\\ui\\auth.setup.ts:5:1 › log in as the standard user\n[2/2] [generated-ui] › tests\\generated\\ui\\PL-UI-02.spec.ts:4:1 › PL-UI-02 add to cart and remove from the product page\n  2 passed (2.3s)"
+    }
+  ],
+  "passed": true,
+  "ruleProblems": [],
+  "changedFiles": [
+    "src/data/products.ts",
+    "src/pages/product.page.ts",
+    "tests/generated/ui/PL-UI-02.spec.ts"
+  ]
+}

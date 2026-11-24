@@ -1,0 +1,26 @@
+{
+  "caseId": "PL-API-01",
+  "casePath": "pipeline/cases/PL-API-01.md",
+  "outFile": "tests/generated/api/PL-API-01.spec.ts",
+  "attempts": [
+    {
+      "attempt": 1,
+      "agent": {
+        "ok": true,
+        "seconds": 15,
+        "turns": 10,
+        "costUsd": 0.2928452,
+        "answer": "1. `files:` created `tests/generated/api/PL-API-01.spec.ts`; extended `src/api/booking.client.ts` with a `partialUpdate` method (`PATCH /booking/{id}`). Nothing was run or checked (no typecheck, lint, format check, test run, or deliberate-failure check).\n2. `assumptions:` `PATCH` accepts the token the same way `PUT` does (`Cookie: token=…`, via the existing `authHeaders`); the admin token precondition is met by calling `createToken` with `env.apiUsername` / `env.apiPassword` inside the test, without asserting on that call.\n3. `risk:` the `PATCH` status 200 assertion — if the cookie token is not accepted for `PATCH`, the service answers 403."
+      },
+      "passed": true,
+      "source": "import type { Booking } from '../../../src/api/types';\nimport { env } from '../../../src/config/env';\nimport { expect, test } from '../../../src/fixtures/api';\n\ntest('PL-API-01 partial update changes only the given fields', async ({\n  bookingClient,\n  booking,\n}) => {\n  const changes: Partial<Booking> = { totalprice: 999, additionalneeds: 'Dinner' };\n  const expected: Booking = { ...booking.data, ...changes };\n\n  const tokenResponse = await bookingClient.createToken(env.apiUsername, env.apiPassword);\n  const { token } = await tokenResponse.json();\n\n  await test.step('partially update the booking', async () => {\n    const response = await bookingClient.partialUpdate(booking.id, changes, token);\n    expect(response.status()).toBe(200);\n    expect(await response.json()).toEqual(expected);\n  });\n\n  await test.step('read the booking back', async () => {\n    const response = await bookingClient.get(booking.id);\n    expect(response.status()).toBe(200);\n    expect(await response.json()).toEqual(expected);\n  });\n});\n",
+      "output": "Running 1 test using 1 worker\n\n[1/1] [generated-api] › tests\\generated\\api\\PL-API-01.spec.ts:5:1 › PL-API-01 partial update changes only the given fields\n  1 passed (1.6s)"
+    }
+  ],
+  "passed": true,
+  "ruleProblems": [],
+  "changedFiles": [
+    "src/api/booking.client.ts",
+    "tests/generated/api/PL-API-01.spec.ts"
+  ]
+}

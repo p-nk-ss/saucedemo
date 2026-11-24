@@ -1,0 +1,26 @@
+{
+  "caseId": "PL-UI-01",
+  "casePath": "pipeline/cases/PL-UI-01.md",
+  "outFile": "tests/generated/ui/PL-UI-01.spec.ts",
+  "attempts": [
+    {
+      "attempt": 1,
+      "agent": {
+        "ok": true,
+        "seconds": 17,
+        "turns": 11,
+        "costUsd": 0.34808960000000005,
+        "answer": "1. `files:` created `tests/generated/ui/PL-UI-01.spec.ts`; extended `src/pages/inventory.page.ts` with a public `prices` locator (`getByTestId('inventory-item-price')`). Nothing was run.\n2. `assumptions:` none — the `hilo` option value and the `inventory-item-price` test id both already exist in the project (`SortOption`, `getProducts()`).\n3. `risk:` the `toHaveText` on `inventoryPage.prices` — it expects each price element's text to be exactly `$49.99`-style, as `formatPrice` produces from `PRODUCTS`."
+      },
+      "passed": true,
+      "source": "import { PRODUCTS, formatPrice } from '../../../src/data/products';\nimport { expect, test } from '../../../src/fixtures/ui';\n\ntest('PL-UI-01 sort by price high to low', async ({ inventoryPage }) => {\n  await inventoryPage.goto();\n  await inventoryPage.sortBy('hilo');\n\n  // Two products share a price, so only the price sequence is compared.\n  await expect(inventoryPage.prices).toHaveText(\n    PRODUCTS.map((p) => p.price)\n      .sort((a, b) => b - a)\n      .map(formatPrice),\n  );\n});\n",
+      "output": "Running 2 tests using 1 worker\n\n[1/2] [setup] › tests\\ui\\auth.setup.ts:5:1 › log in as the standard user\n[2/2] [generated-ui] › tests\\generated\\ui\\PL-UI-01.spec.ts:4:1 › PL-UI-01 sort by price high to low\n  2 passed (2.3s)"
+    }
+  ],
+  "passed": true,
+  "ruleProblems": [],
+  "changedFiles": [
+    "src/pages/inventory.page.ts",
+    "tests/generated/ui/PL-UI-01.spec.ts"
+  ]
+}

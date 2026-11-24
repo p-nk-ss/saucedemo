@@ -38,6 +38,14 @@ export class BookingClient {
     });
   }
 
+  partialUpdate(id: number, fields: Partial<Booking>, token?: string): Promise<APIResponse> {
+    return this.request.patch(`/booking/${id}`, {
+      data: fields,
+      headers: authHeaders(token),
+      timeout: REQUEST_TIMEOUT,
+    });
+  }
+
   delete(id: number, token?: string): Promise<APIResponse> {
     return this.request.delete(`/booking/${id}`, {
       headers: authHeaders(token),
