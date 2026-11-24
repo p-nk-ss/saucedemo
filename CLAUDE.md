@@ -52,6 +52,9 @@ assertion to make such a test pass.
 
 ## Mistakes
 
-When you make a mistake and it is noticed (by you or by the reviewer), add it to the
-"Running log" in `AI_WORKLOG.md` right away: what happened, who noticed and how, the fix.
-Never invent or embellish an entry.
+When you make a mistake and it is noticed (by you or by the reviewer), say so in your next
+summary: what happened, who noticed and how, the fix. Do not bury it under a green run.
+`AI_WORKLOG.md` is written from these reports. Never invent or embellish an entry.
+
+Any number you report (time, counts, versions) needs a source that can be checked: a command
+output, a timestamp, a file. If you did not measure it, say it is an estimate.

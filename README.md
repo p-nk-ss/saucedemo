@@ -99,7 +99,7 @@ the suite stops there on purpose. Left out, in order of what I would add next:
 
 - **The other two sort orders** (A to Z, price high to low): same mechanism as the two covered.
 - **Logout and the burger menu**, including "Reset App State": not among the scenarios the
-  brief names. The reset bug was found by hand and is reported below.
+  brief names. The reset bug was found during exploration and is reported below.
 - **The other saucedemo users** (`locked_out_user`, `problem_user`, `visual_user`, ...): the
   brief names `standard_user`.
 - **Firefox, WebKit and mobile viewports:** Chromium only, to keep the run short.
@@ -109,7 +109,10 @@ the suite stops there on purpose. Left out, in order of what I would add next:
 
 ## Bugs found
 
-All were reproduced by hand on 2026-11-24 with `standard_user` in Chromium, or with `curl`.
+Found during exploratory testing before the tests were written: the agent drove a real browser
+(`playwright-cli`) as `standard_user` and called the API with `curl`. Each bug was reproduced
+again on 2026-11-24 before it was written up here. Restful-booker is a practice API with bugs
+planted on purpose; they are reported as they would be for a real service.
 
 ### BUG-UI-01 An order can be placed with an empty cart
 
@@ -197,8 +200,8 @@ All were reproduced by hand on 2026-11-24 with `standard_user` in Chromium, or w
 
 ## Time spent
 
-About 1 hour 15 minutes of wall-clock time for the mandatory part, measured from file and
-commit timestamps: roughly 35 minutes of exploring both targets and agreeing the design with
-the agent, and 40 minutes of building, including my three reviews. The brief allows up to 4
-hours; most of the difference is the agent's typing speed, not skipped work — see
-[`AI_WORKLOG.md`](AI_WORKLOG.md) for what it cost in mistakes.
+Under an hour and a half of wall-clock time for the mandatory part, out of the 4 hours the
+brief allows. It is measured from the timestamp of the assignment file (19:08) to the last
+commit of the mandatory part, not estimated. The first 34 minutes, up to the first commit, went
+into exploring both targets and agreeing the design; the rest into building, reviews and
+rework after the reviews.
