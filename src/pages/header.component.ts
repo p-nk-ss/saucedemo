@@ -5,11 +5,14 @@ export class HeaderComponent {
   /** Absent from the DOM when the cart is empty. */
   readonly cartBadge: Locator;
 
-  constructor(private readonly page: Page) {
+  private readonly cartLink: Locator;
+
+  constructor(page: Page) {
     this.cartBadge = page.getByTestId('shopping-cart-badge');
+    this.cartLink = page.getByTestId('shopping-cart-link');
   }
 
   async openCart(): Promise<void> {
-    await this.page.getByTestId('shopping-cart-link').click();
+    await this.cartLink.click();
   }
 }

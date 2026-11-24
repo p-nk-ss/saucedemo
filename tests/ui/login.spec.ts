@@ -14,7 +14,7 @@ test('TC-UI-01 login with valid credentials opens the catalog', async ({
 
   await expect(page).toHaveURL(/\/inventory\.html$/);
   await expect(inventoryPage.title).toHaveText('Products');
-  expect(await inventoryPage.getProducts()).toHaveLength(PRODUCTS.length);
+  await expect(inventoryPage.names).toHaveCount(PRODUCTS.length);
 });
 
 test('TC-UI-08 login with a wrong password shows an error', async ({ page, loginPage }) => {

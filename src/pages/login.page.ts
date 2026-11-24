@@ -3,7 +3,14 @@ import type { Locator, Page } from '@playwright/test';
 export class LoginPage {
   readonly errorMessage: Locator;
 
+  private readonly usernameInput: Locator;
+  private readonly passwordInput: Locator;
+  private readonly loginButton: Locator;
+
   constructor(private readonly page: Page) {
+    this.usernameInput = page.getByTestId('username');
+    this.passwordInput = page.getByTestId('password');
+    this.loginButton = page.getByTestId('login-button');
     this.errorMessage = page.getByTestId('error');
   }
 
@@ -12,8 +19,8 @@ export class LoginPage {
   }
 
   async login(username: string, password: string): Promise<void> {
-    await this.page.getByTestId('username').fill(username);
-    await this.page.getByTestId('password').fill(password);
-    await this.page.getByTestId('login-button').click();
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
   }
 }

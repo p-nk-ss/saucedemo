@@ -1,35 +1,34 @@
 import type { Locator, Page } from '@playwright/test';
-import type { Product, SortOption } from '../data/products';
+import type { SortOption } from '../data/products';
 
 export class InventoryPage {
   readonly title: Locator;
+  /** Product names in the order they are shown. */
+  readonly names: Locator;
+  /** Product prices in the order they are shown, as text: "$29.99". */
   readonly prices: Locator;
+
+  // The product page, the cart and the checkout overview reuse the catalog's test ids,
+  // so everything here is looked up inside the catalog's own list.
+  private readonly list: Locator;
   private readonly cards: Locator;
+  private readonly sortDropdown: Locator;
 
   constructor(private readonly page: Page) {
     this.title = page.getByTestId('title');
-    this.prices = page.getByTestId('inventory-item-price');
-    this.cards = page.getByTestId('inventory-item');
+    this.list = page.getByTestId('inventory-list');
+    this.cards = this.list.getByTestId('inventory-item');
+    this.names = this.list.getByTestId('inventory-item-name');
+    this.prices = this.list.getByTestId('inventory-item-price');
+    this.sortDropdown = page.getByTestId('product-sort-container');
   }
 
   async goto(): Promise<void> {
     await this.page.goto('/inventory.html');
   }
 
-  /** Products in the order they are shown on the page. */
-  async getProducts(): Promise<Product[]> {
-    await this.cards.first().waitFor();
-    const products: Product[] = [];
-    for (const card of await this.cards.all()) {
-      const name = await card.getByTestId('inventory-item-name').innerText();
-      const price = await card.getByTestId('inventory-item-price').innerText();
-      products.push({ name, price: Number(price.replace('$', '')) });
-    }
-    return products;
-  }
-
   async sortBy(option: SortOption): Promise<void> {
-    await this.page.getByTestId('product-sort-container').selectOption(option);
+    await this.sortDropdown.selectOption(option);
   }
 
   async addToCart(productName: string): Promise<void> {
@@ -40,11 +39,11 @@ export class InventoryPage {
     await this.card(productName).getByRole('button', { name: 'Remove' }).click();
   }
 
+  /** Opens the product page and returns once it has replaced the catalog. */
   async openProduct(productName: string): Promise<void> {
     await this.card(productName).getByTestId('inventory-item-name').click();
-    // The product page reuses the catalog's test ids, and the URL changes before the page
-    // re-renders. Wait for an element only the product page has.
-    await this.page.getByTestId('back-to-products').waitFor();
+    // The URL changes before the page re-renders, so wait for the catalog to go away.
+    await this.list.waitFor({ state: 'detached' });
   }
 
   private card(productName: string): Locator {

@@ -6,7 +6,8 @@ test('TC-UI-02 catalog and product page show the same data', async ({
   productPage,
 }) => {
   await inventoryPage.goto();
-  expect(await inventoryPage.getProducts()).toEqual([...PRODUCTS]);
+  await expect(inventoryPage.names).toHaveText(PRODUCTS.map((p) => p.name));
+  await expect(inventoryPage.prices).toHaveText(PRODUCTS.map((p) => formatPrice(p.price)));
 
   await inventoryPage.openProduct(FLEECE_JACKET);
   await expect(productPage.name).toHaveText(FLEECE_JACKET);

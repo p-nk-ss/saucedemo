@@ -1,10 +1,18 @@
 import type { Locator, Page } from '@playwright/test';
 
 export class CartPage {
+  /** Names of the products in the cart, in order. */
   readonly itemNames: Locator;
 
+  private readonly root: Locator;
+  private readonly items: Locator;
+  private readonly checkoutButton: Locator;
+
   constructor(private readonly page: Page) {
-    this.itemNames = page.getByTestId('inventory-item-name');
+    this.root = page.getByTestId('cart-contents-container');
+    this.items = this.root.getByTestId('inventory-item');
+    this.itemNames = this.root.getByTestId('inventory-item-name');
+    this.checkoutButton = this.root.getByTestId('checkout');
   }
 
   async goto(): Promise<void> {
@@ -12,14 +20,13 @@ export class CartPage {
   }
 
   async remove(productName: string): Promise<void> {
-    await this.page
-      .getByTestId('inventory-item')
-      .filter({ has: this.itemNames.getByText(productName, { exact: true }) })
+    await this.items
+      .filter({ has: this.page.getByText(productName, { exact: true }) })
       .getByRole('button', { name: 'Remove' })
       .click();
   }
 
   async checkout(): Promise<void> {
-    await this.page.getByTestId('checkout').click();
+    await this.checkoutButton.click();
   }
 }
