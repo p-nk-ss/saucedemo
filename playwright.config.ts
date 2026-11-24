@@ -34,5 +34,18 @@ export default defineConfig({
       timeout: 60_000,
       use: { baseURL: env.apiBaseUrl, extraHTTPHeaders: { Accept: 'application/json' } },
     },
+    // Tests written by the pipeline in `pipeline/`. They are not part of `npm test`.
+    {
+      name: 'generated-ui',
+      testDir: './tests/generated/ui',
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'], baseURL: env.uiBaseUrl, storageState: STORAGE_STATE },
+    },
+    {
+      name: 'generated-api',
+      testDir: './tests/generated/api',
+      timeout: 60_000,
+      use: { baseURL: env.apiBaseUrl, extraHTTPHeaders: { Accept: 'application/json' } },
+    },
   ],
 });

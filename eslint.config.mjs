@@ -11,5 +11,9 @@ export default tseslint.config(
     ...playwright.configs['flat/recommended'],
     files: ['tests/**/*.ts'],
   },
+  {
+    files: ['pipeline/**/*.mjs'],
+    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
+  },
   prettier,
 );

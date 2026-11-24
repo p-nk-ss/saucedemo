@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "description": "Playwright UI and API tests: saucedemo.com and restful-booker",
   "scripts": {
-    "test": "playwright test",
+    "test": "playwright test --project=ui --project=api",
     "test:ui": "playwright test --project=ui",
     "test:api": "playwright test --project=api",
     "typecheck": "tsc --noEmit",
     "report": "playwright show-report",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:generated": "playwright test --project=generated-ui --project=generated-api",
+    "pipeline": "node pipeline/generate.mjs"
   },
   "type": "commonjs",
   "devDependencies": {

@@ -24,7 +24,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run tests
-        run: npx playwright test
+        run: npm test
 
       # Static checks run after the tests and regardless of their result, so that a
       # formatting error never costs the test report.
