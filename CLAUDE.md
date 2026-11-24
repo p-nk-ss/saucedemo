@@ -2,7 +2,7 @@
 
 Test assignment for a QA Automation Engineer position: Playwright + TypeScript UI tests for
 https://www.saucedemo.com and API tests for https://restful-booker.herokuapp.com.
-Requirements: `QA Automation Engineer (Middle).md`. Design and plan: `docs/superpowers/`.
+Requirements: `QA Automation Engineer (Middle).md`.
 
 ## Stack
 
