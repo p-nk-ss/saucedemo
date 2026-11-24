@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
-import type { Product } from '../data/products';
+import type { Product, SortOption } from '../data/products';
 
 export class InventoryPage {
   readonly title: Locator;
@@ -24,5 +24,27 @@ export class InventoryPage {
       products.push({ name, price: Number(price.replace('$', '')) });
     }
     return products;
+  }
+
+  async sortBy(option: SortOption): Promise<void> {
+    await this.page.getByTestId('product-sort-container').selectOption(option);
+  }
+
+  async addToCart(productName: string): Promise<void> {
+    await this.card(productName).getByRole('button', { name: 'Add to cart' }).click();
+  }
+
+  async removeFromCart(productName: string): Promise<void> {
+    await this.card(productName).getByRole('button', { name: 'Remove' }).click();
+  }
+
+  async openProduct(productName: string): Promise<void> {
+    await this.card(productName).getByTestId('inventory-item-name').click();
+  }
+
+  private card(productName: string): Locator {
+    return this.cards.filter({
+      has: this.page.getByTestId('inventory-item-name').getByText(productName, { exact: true }),
+    });
   }
 }

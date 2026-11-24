@@ -14,3 +14,17 @@ export const PRODUCTS: readonly Product[] = [
 ];
 
 export type SortOption = 'az' | 'za' | 'lohi' | 'hilo';
+
+export const BACKPACK = 'Sauce Labs Backpack';
+export const ONESIE = 'Sauce Labs Onesie';
+export const FLEECE_JACKET = 'Sauce Labs Fleece Jacket';
+
+export function priceOf(productName: string): number {
+  const product = PRODUCTS.find((p) => p.name === productName);
+  if (!product) throw new Error(`Unknown product: ${productName}`);
+  return product.price;
+}
+
+export const toCents = (amount: number): number => Math.round(amount * 100);
+
+export const formatPrice = (amount: number): string => '$' + amount.toFixed(2);
