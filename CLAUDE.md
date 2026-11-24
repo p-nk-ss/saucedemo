@@ -28,6 +28,15 @@ Node LTS, npm, TypeScript, `@playwright/test`. Chromium only.
   changing its case in `docs/test-cases/` first.
 - Locators live only in page objects and use `data-test` via `getByTestId`. Spec files contain
   no `locator(`, `getBy...`, `waitForTimeout`.
+- Page objects:
+  - A page object declares its locators once, as `readonly` fields set in the constructor:
+    public for what tests assert on, `private` for what only its own methods use.
+  - Several pages reuse the same test ids (`inventory-item-name` is on four of them). Look
+    elements up inside the page's own root container, never page-wide.
+  - Methods are user actions (`addToCart`, `checkout`). A method that leads to another page
+    returns only when that page has replaced the current one.
+  - Page objects contain no assertions. Tests assert, with retrying assertions on locators
+    (`await expect(page.names).toHaveText([...])`), not on values read once.
 - The burger menu is opened with `getByRole('button', { name: 'Open Menu' })`. The
   `data-test="open-menu"` attribute sits on an image under the button and cannot be clicked.
 - Expected values come from `src/data/`, not from literals repeated in tests. Expected order in

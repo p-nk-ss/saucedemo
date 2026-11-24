@@ -218,8 +218,9 @@ Now only the final assertion is expected to fail.
 - **How it was noticed:** CI. After ten green runs, a commit that touched only
   documentation went red. The trace from the report artifact showed the assertion failing 11
   ms after the click, with the catalog still on screen.
-- **Fix:** the page object now waits for an element that only the product page has before it
-  returns. The agent's first fix — waiting for the URL — was wrong too: the URL changes before
+- **Fix:** opening a product now returns only when the catalog has left the page, and every
+  page object looks its elements up inside its own container instead of page-wide. The
+  agent's first fix — waiting for the URL — was wrong too: the URL changes before
   the page re-renders. That was caught only because the race was first reproduced on purpose,
   by slowing the browser's CPU (5 failures out of 5), and the fix was run against the same
   reproduction. The switch is kept: `CPU_THROTTLE=6 npm run test:ui`.
