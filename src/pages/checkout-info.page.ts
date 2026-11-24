@@ -9,7 +9,7 @@ export class CheckoutInfoPage {
   }
 
   /** Fills only the fields that are given; the rest keep their current value. */
-  async fill(customer: Partial<Customer>): Promise<void> {
+  async fillForm(customer: Partial<Customer>): Promise<void> {
     if (customer.firstName !== undefined) {
       await this.page.getByTestId('firstName').fill(customer.firstName);
     }

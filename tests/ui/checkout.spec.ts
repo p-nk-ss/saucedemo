@@ -25,7 +25,7 @@ test('TC-UI-06 complete an order', async ({
   checkoutCompletePage,
 }) => {
   await openCheckoutWith({ inventoryPage, header, cartPage }, [BACKPACK, ONESIE]);
-  await checkoutInfoPage.fill(CUSTOMER);
+  await checkoutInfoPage.fillForm(CUSTOMER);
   await checkoutInfoPage.continue();
 
   await expect(checkoutOverviewPage.itemNames).toHaveText([BACKPACK, ONESIE]);
@@ -48,7 +48,7 @@ test('TC-UI-07 cancel checkout on the overview step keeps the cart', async ({
   checkoutOverviewPage,
 }) => {
   await openCheckoutWith({ inventoryPage, header, cartPage }, [BACKPACK, ONESIE]);
-  await checkoutInfoPage.fill(CUSTOMER);
+  await checkoutInfoPage.fillForm(CUSTOMER);
   await checkoutInfoPage.continue();
   await checkoutOverviewPage.cancel();
 
@@ -73,13 +73,13 @@ test('TC-UI-09 checkout information requires every field', async ({
   });
 
   await test.step('only first name filled', async () => {
-    await checkoutInfoPage.fill({ firstName: CUSTOMER.firstName });
+    await checkoutInfoPage.fillForm({ firstName: CUSTOMER.firstName });
     await checkoutInfoPage.continue();
     await expect(checkoutInfoPage.errorMessage).toHaveText('Error: Last Name is required');
   });
 
   await test.step('postal code missing', async () => {
-    await checkoutInfoPage.fill({ lastName: CUSTOMER.lastName });
+    await checkoutInfoPage.fillForm({ lastName: CUSTOMER.lastName });
     await checkoutInfoPage.continue();
     await expect(checkoutInfoPage.errorMessage).toHaveText('Error: Postal Code is required');
   });

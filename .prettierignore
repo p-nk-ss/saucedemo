@@ -1,0 +1,8 @@
+node_modules/
+playwright-report/
+test-results/
+.auth/
+package-lock.json
+.claude/
+docs/superpowers/
+QA Automation Engineer (Middle).md

@@ -46,7 +46,7 @@ assertion to make such a test pass.
 ## Before reporting a task as done
 
 1. `grep -rnE "locator\(|getBy|waitForTimeout" tests/` prints nothing.
-2. `npm run typecheck` is clean.
+2. `npm run typecheck`, `npm run lint` and `npm run format:check` are clean.
 3. `npx playwright test` is green.
 4. Each new test was seen failing once with a deliberately wrong expected value.
 
