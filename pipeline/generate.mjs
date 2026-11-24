@@ -76,7 +76,7 @@ function buildPrompt(template, { caseId, caseText, outFile, feedback }) {
 function askAgent(prompt) {
   const started = Date.now();
   const result = run('claude', AGENT_ARGS, { input: prompt, timeout: AGENT_TIMEOUT_MS });
-  let reply = {};
+  let reply;
   try {
     reply = JSON.parse(result.stdout);
   } catch {
