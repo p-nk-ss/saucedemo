@@ -23,17 +23,22 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Run tests
+        run: npx playwright test
+
+      # Static checks run after the tests and regardless of their result, so that a
+      # formatting error never costs the test report.
       - name: Type check
+        if: ${{ !cancelled() }}
         run: npm run typecheck
 
       - name: Lint
+        if: ${{ !cancelled() }}
         run: npm run lint
 
       - name: Check formatting
+        if: ${{ !cancelled() }}
         run: npm run format:check
-
-      - name: Run tests
-        run: npx playwright test
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v7

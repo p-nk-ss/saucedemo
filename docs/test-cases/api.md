@@ -44,9 +44,9 @@ creates the bookings it needs and deletes them afterwards. Requests send
 - Behaviour: negative
 - Priority: high
 
-| #   | Action                                         | Expected result          |
-| --- | ---------------------------------------------- | ------------------------ |
-| 1   | `POST /auth` with `admin` and a wrong password | The body has no `token`. |
+| #   | Action                                         | Expected result                                                                 |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1   | `POST /auth` with `admin` and a wrong password | The body is exactly `{"reason":"Bad credentials"}`: no `token` field is issued. |
 
 ### TC-API-04 Create without required fields is rejected
 

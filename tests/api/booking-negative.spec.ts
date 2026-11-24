@@ -13,7 +13,8 @@ test('TC-API-02 update without a token is rejected', async ({ bookingClient, boo
 test('TC-API-03 wrong password gives no token', async ({ bookingClient }) => {
   const response = await bookingClient.createToken(env.apiUsername, 'wrong_password');
 
-  expect(await response.json()).not.toHaveProperty('token');
+  // The status is 200 instead of 401 (BUG-API-03), so the body is what is asserted.
+  expect(await response.json()).toEqual({ reason: 'Bad credentials' });
 });
 
 test(

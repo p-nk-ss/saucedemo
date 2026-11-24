@@ -18,16 +18,25 @@ export interface ApiFixtures {
 export const test = base.extend<ApiFixtures>({
   bookingClient: async ({ request }, use) => use(new BookingClient(request)),
 
-  cleanupBookingIds: async ({ bookingClient }, use) => {
+  cleanupBookingIds: async ({ bookingClient }, use, testInfo) => {
     const ids: number[] = [];
     await use(ids);
 
     if (ids.length === 0) return;
-    const response = await bookingClient.createToken(env.apiUsername, env.apiPassword);
-    const { token } = await response.json();
-    for (const id of ids) {
-      // The test may have deleted the booking itself; the answer is not checked.
-      await bookingClient.delete(id, token);
+    // Best effort: the service resets itself every 10 minutes anyway, so a failed
+    // cleanup is recorded in the report but must not turn a passed test red.
+    try {
+      const response = await bookingClient.createToken(env.apiUsername, env.apiPassword);
+      const { token } = await response.json();
+      for (const id of ids) {
+        // The test may have deleted the booking itself; the answer is not checked.
+        await bookingClient.delete(id, token);
+      }
+    } catch (error) {
+      testInfo.annotations.push({
+        type: 'cleanup',
+        description: `bookings ${ids.join(', ')} were not deleted: ${String(error)}`,
+      });
     }
   },
 
