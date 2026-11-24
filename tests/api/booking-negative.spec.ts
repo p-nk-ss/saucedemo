@@ -20,10 +20,17 @@ test(
   'TC-API-04 create without required fields is rejected',
   { annotation: { type: 'bug', description: 'BUG-API-01' } },
   async ({ bookingClient }) => {
+    const { firstname } = buildBooking();
+
+    const response = await bookingClient.create({ firstname });
+
+    // The request must be answered by the application itself: a timeout or a
+    // gateway error is a real failure, not the known bug.
+    expect([400, 500]).toContain(response.status());
+    const found = await bookingClient.findByFirstname(firstname);
+    expect(await found.json()).toEqual([]);
+
     test.fail(true, 'BUG-API-01: missing required fields cause 500 instead of 400');
-
-    const response = await bookingClient.create({ firstname: 'OnlyFirstName' });
-
     expect(response.status()).toBe(400);
   },
 );

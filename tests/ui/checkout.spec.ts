@@ -91,12 +91,15 @@ test(
   'TC-UI-10 checkout with an empty cart is blocked',
   { annotation: { type: 'bug', description: 'BUG-UI-01' } },
   async ({ page, header, cartPage }) => {
-    test.fail(true, 'BUG-UI-01: checkout is available with an empty cart');
-
     await cartPage.goto();
+    await expect(page).toHaveURL(/\/cart\.html$/);
+    await expect(cartPage.itemNames).toHaveCount(0);
     await expect(header.cartBadge).toBeHidden();
     await cartPage.checkout();
 
+    // Only the assertion below is expected to fail: a problem in the steps above
+    // (session lost, page not loaded) must still turn the test red.
+    test.fail(true, 'BUG-UI-01: checkout is available with an empty cart');
     await expect(page).not.toHaveURL(/\/checkout-step-one\.html$/);
   },
 );

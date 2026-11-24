@@ -25,6 +25,11 @@ export class BookingClient {
     return this.request.get(`/booking/${id}`, { timeout: REQUEST_TIMEOUT });
   }
 
+  /** Answers with a list of `{ bookingid }` for bookings with this first name. */
+  findByFirstname(firstname: string): Promise<APIResponse> {
+    return this.request.get('/booking', { params: { firstname }, timeout: REQUEST_TIMEOUT });
+  }
+
   update(id: number, booking: Booking, token?: string): Promise<APIResponse> {
     return this.request.put(`/booking/${id}`, {
       data: booking,
