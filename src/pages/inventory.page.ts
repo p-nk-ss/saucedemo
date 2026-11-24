@@ -40,6 +40,9 @@ export class InventoryPage {
 
   async openProduct(productName: string): Promise<void> {
     await this.card(productName).getByTestId('inventory-item-name').click();
+    // The product page reuses the catalog's test ids, and the URL changes before the page
+    // re-renders. Wait for an element only the product page has.
+    await this.page.getByTestId('back-to-products').waitFor();
   }
 
   private card(productName: string): Locator {

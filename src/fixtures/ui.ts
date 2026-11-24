@@ -19,7 +19,21 @@ export interface UiFixtures {
   checkoutCompletePage: CheckoutCompletePage;
 }
 
-export const test = base.extend<UiFixtures>({
+export const test = base.extend<UiFixtures & { cpuThrottle: void }>({
+  // Flake hunting: `CPU_THROTTLE=20 npm run test:ui` slows the page down so that
+  // assertions racing a re-render fail on a fast machine too.
+  cpuThrottle: [
+    async ({ page }, use) => {
+      const rate = Number(process.env.CPU_THROTTLE ?? 1);
+      if (rate > 1) {
+        const cdp = await page.context().newCDPSession(page);
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate });
+      }
+      await use();
+    },
+    { auto: true },
+  ],
+
   loginPage: async ({ page }, use) => use(new LoginPage(page)),
   header: async ({ page }, use) => use(new HeaderComponent(page)),
   inventoryPage: async ({ page }, use) => use(new InventoryPage(page)),
