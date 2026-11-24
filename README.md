@@ -200,8 +200,8 @@ planted on purpose; they are reported as they would be for a real service.
 
 ## Time spent
 
-Under an hour and a half of wall-clock time for the mandatory part, out of the 4 hours the
+About an hour and a half of wall-clock time for the mandatory part, out of the 4 hours the
 brief allows. It is measured from the timestamp of the assignment file (19:08) to the last
 commit of the mandatory part, not estimated. The first 34 minutes, up to the first commit, went
-into exploring both targets and agreeing the design; the rest into building, reviews and
+into exploring both targets and agreeing the design; the rest into building, reviews, tracking down one flaky test and
 rework after the reviews.
