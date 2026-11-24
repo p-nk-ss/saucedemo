@@ -16,6 +16,8 @@ Node LTS, npm, TypeScript, `@playwright/test`. Chromium only.
 - `src/fixtures/` — `ui.ts` and `api.ts`; tests import `test` and `expect` from here.
 - `src/data/` — test data and the expected catalog.
 - `tests/ui/`, `tests/api/` — spec files.
+- `pipeline/` — turns a written case into a test with a headless agent; its output goes to
+  `tests/generated/`, which is not part of `npm test`.
 
 ## Rules
 

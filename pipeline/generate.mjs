@@ -103,6 +103,25 @@ function runTest(outFile, project) {
   return { passed: result.code === 0 && ran && !failed, output };
 }
 
+// Everything a generated test must survive, cheapest check first. The first failure is
+// returned as text and becomes the agent's feedback for the next attempt.
+function verify(outFile, project, files) {
+  const formattable = files.filter((f) => existsSync(join(ROOT, f)));
+  if (formattable.length) run('npx', ['prettier', '--write', ...formattable]);
+
+  const staticChecks = [
+    ['type check', ['tsc', '--noEmit']],
+    ['lint', ['eslint', '.', '--max-warnings', '0']],
+  ];
+  for (const [name, args] of staticChecks) {
+    const result = run('npx', args);
+    if (result.code !== 0) {
+      return { passed: false, output: `${name} failed\n${result.stdout}\n${result.stderr}`.trim() };
+    }
+  }
+  return runTest(outFile, project);
+}
+
 function checkRules(caseId, outFile, before) {
   const problems = [];
   const path = join(ROOT, outFile);
@@ -138,8 +157,9 @@ function generate(casePath, template) {
 
     let test = { passed: false, output: 'the agent call failed; the test was not run' };
     if (agent.ok && existsSync(join(ROOT, outFile))) {
-      console.log(`[${caseId}] attempt ${attempt}: running the test`);
-      test = runTest(outFile, `generated-${kind}`);
+      console.log(`[${caseId}] attempt ${attempt}: formatting, static checks, running the test`);
+      const touched = changedFiles().filter((f) => !before.has(f) && ALLOWED_CHANGES.test(f));
+      test = verify(outFile, `generated-${kind}`, touched);
     }
 
     const source = existsSync(join(ROOT, outFile)) ? readFileSync(join(ROOT, outFile), 'utf8') : '';
@@ -164,7 +184,25 @@ function generate(casePath, template) {
   return record;
 }
 
-const cases = process.argv.slice(2);
+const verifyOnly = process.argv.includes('--verify-only');
+const cases = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+
+// Re-check tests that were generated earlier, without calling the agent.
+if (verifyOnly) {
+  let failed = 0;
+  for (const casePath of cases) {
+    const caseId = basename(casePath, '.md');
+    const kind = caseId.includes('-API-') ? 'api' : 'ui';
+    const outFile = `tests/generated/${kind}/${caseId}.spec.ts`;
+    const test = verify(outFile, `generated-${kind}`, [outFile]);
+    const problems = checkRules(caseId, outFile, new Set(changedFiles()));
+    const ok = test.passed && problems.length === 0;
+    console.log(`[${caseId}] ${ok ? 'OK' : `FAILED ${problems.join('; ')}\n${test.output}`}`);
+    if (!ok) failed++;
+  }
+  process.exit(failed ? 1 : 0);
+}
+
 if (cases.length === 0) {
   console.error('usage: node pipeline/generate.mjs <case.md> [more cases...]');
   process.exit(2);

@@ -9,6 +9,7 @@ TypeScript together with an AI agent. The task itself is in
 
 - Test cases: [`docs/test-cases/ui.md`](docs/test-cases/ui.md), [`docs/test-cases/api.md`](docs/test-cases/api.md)
 - How the agent was used and where it went wrong: [`AI_WORKLOG.md`](AI_WORKLOG.md)
+- Bonus, test case text → runnable test: [`pipeline/README.md`](pipeline/README.md)
 
 ## How to run
 
@@ -198,10 +199,25 @@ planted on purpose; they are reported as they would be for a real service.
 - **Actual:** `200 OK`, the booking is created. The price is also stored as `-5`: the
   fractional part is silently dropped.
 
+## Bonus: test case text → Playwright test
+
+[`pipeline/`](pipeline) holds a script that takes a test case written as text, has a headless
+agent write the Playwright test, then formats, type-checks, lints and runs it, feeding any
+failure back to the agent. Three examples — input, generated test, result, and what had to be
+fixed by hand — are in [`pipeline/README.md`](pipeline/README.md).
+
+```bash
+npm run pipeline -- pipeline/cases/PL-UI-01.md
+npm run test:generated
+```
+
+Generated tests are kept apart from the main suite: they are not part of `npm test` or of CI.
+
 ## Time spent
 
-About an hour and a half of wall-clock time for the mandatory part, out of the 4 hours the
-brief allows. It is measured from the timestamp of the assignment file (19:08) to the last
-commit of the mandatory part, not estimated. The first 34 minutes, up to the first commit, went
-into exploring both targets and agreeing the design; the rest into building, reviews, tracking down one flaky test and
-rework after the reviews.
+About 1 hour 40 minutes of wall-clock time for the mandatory part, out of the 4 hours the brief
+allows. It is measured from the timestamp of the assignment file (19:08) to the last commit of
+the mandatory part (20:45), not estimated. The first 34 minutes, up to the first commit, went
+into exploring both targets and agreeing the design; the rest into building, reviews, rework
+after the reviews and tracking down one flaky test. The bonus pipeline took about 15 more
+minutes and is not counted in that figure.
